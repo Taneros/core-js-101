@@ -19,8 +19,10 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = () => this.width * this.height;
 }
 
 /**
@@ -33,8 +35,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 /**
@@ -109,32 +111,75 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  stringify() {
+    return this.stringifyArr.join('');
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  moreThanOnce: [0, 0, 0],
+
+  // eslint-disable
+  checkMoreThanOnce(obj, idx) {
+    const newObj = obj;
+    newObj.moreThanOnce[idx] += 1;
+    if (newObj.moreThanOnce.includes(2)) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    const elObj = Object.create(this);
+    elObj.stringifyArr = this.stringifyArr || [];
+    elObj.stringifyArr.push(value);
+    elObj.checkMoreThanOnce(elObj, 0);
+    return elObj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const idObj = Object.create(this);
+    idObj.stringifyArr = this.stringifyArr || [];
+    idObj.stringifyArr.push(`#${value}`);
+    idObj.checkMoreThanOnce(idObj, 1);
+
+    return idObj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const clObj = Object.create(this);
+    clObj.stringifyArr = this.stringifyArr || [];
+    clObj.stringifyArr.push(`.${value}`);
+
+    return clObj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const attrObj = Object.create(this);
+    attrObj.stringifyArr = this.stringifyArr || [];
+    attrObj.stringifyArr.push(`[${value}]`);
+
+    return attrObj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const psObj = Object.create(this);
+    psObj.stringifyArr = this.stringifyArr || [];
+    psObj.stringifyArr.push(`:${value}`);
+    return psObj;
+  },
+
+  pseudoElement(value) {
+    const psElObj = Object.create(this);
+    psElObj.stringifyArr = this.stringifyArr || [];
+    psElObj.stringifyArr.push(`::${value}`);
+    psElObj.checkMoreThanOnce(psElObj, 2);
+    return psElObj;
+  },
+
+  combine(selector1, combinator, selector2) {
+    const combObj = Object.create(this);
+    combObj.combine = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    combObj.stringifyArr = this.stringifyArr || [];
+    combObj.stringifyArr.push(combObj.combine);
+    return combObj;
   },
 };
 
