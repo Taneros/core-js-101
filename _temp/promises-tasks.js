@@ -128,33 +128,26 @@
 //   }).then((value) => console.log(value));
 // }
 
-// function chainPromises(array, action) {
-//   const newArr = array.map((p) => p.catch((e) => e));
+function chainPromises(array, action) {
+  // Base case.
+  if (array.length === 0) {
+    return Promise.resolve([]);
+  }
 
-//   // Base case.
-//   if (newArr.length === 0) {
-//     return Promise.resolve([]);
-//   }
+  const [first, ...rest] = array;
 
-//   const [first, ...rest] = newArr;
+  return Promise.resolve(first).then((firstResult) => {
+    return chainPromises(rest, action).then((restResults) => {
+      return [firstResult, ...restResults];
+    });
+  });
+}
 
-// Calling Promise.resolve on the first value because it could
-// be either a Promise or an actual value.
-//   return Promise.resolve(first)
-//     .then((firstResult) => {
-//       return chainPromises(rest).then((restResults) => {
-//         return [firstResult, ...restResults];
-//       });
-//     })
-//     .then((values) => values.filter((v) => typeof v === 'number'))
-//     .then((v) => v.reduce((acc, el) => acc + el), 0);
-// }
-
-// const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
-// const p = chainPromises(promises, (a, b) => a + b);
-// p.then((res) => {
-//   console.log(res);
-// }); //?
+const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+const p = chainPromises(promises, (a, b) => a + b);
+p.then((res) => {
+  console.log(res);
+}); //?
 
 // const promisess = [Promise.resolve(2), Promise.resolve(1), Promise.resolve(4)];
 // const pp = chainPromises(promisess, (a, b) => a * b);
@@ -162,11 +155,11 @@
 //   console.log(res);
 // });
 
-const promisesss = [Promise.resolve(2), Promise.reject('err'), Promise.resolve(4)];
-const ppp = chainPromises(promisesss, (a, b) => a - b);
-ppp.then((res) => {
-  console.log(res);
-}); //?
+// const promisesss = [Promise.resolve(2), Promise.reject('err'), Promise.resolve(4)];
+// const ppp = chainPromises(promisesss, (a, b) => a - b);
+// ppp.then((res) => {
+//   console.log(res);
+// }); //?
 
 // const promisesss = [];
 // const ppp = chainPromises(promisesss, (a, b) => a - b);
