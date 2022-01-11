@@ -1,7 +1,15 @@
 class CSSBuilder {
   constructor() {
     this.stringifyArr = [];
-    this.order = [0, 0, 0, 0, 0, 0];
+    this.order = [];
+    this.orderInfo = {
+      element: 100000,
+      id: 10000,
+      class: 1000,
+      attribute: 100,
+      pseudoClass: 10,
+      pseudoElement: 1,
+    };
     this.elArr = [];
     this.idArr = [];
     this.clArr = [];
@@ -14,50 +22,50 @@ class CSSBuilder {
     this.stringifyArr.push(value);
     this.elArr.push(value);
     this.checkMoreThanOnce(this.elArr);
-    this.order[0] += 1;
-    this.checkOrder(0);
+    this.order.push(this.orderInfo.element);
+    this.checkOrder(this.orderInfo.element);
     return this; // ?
   }
 
   id(value) {
     this.stringifyArr.push(`#${value}`);
-    this.idArr.push(`#${value}`); //?
-    this.order[1] = +1;
+    this.idArr.push(`#${value}`);
+    this.order.push(this.orderInfo.id);
     this.checkMoreThanOnce(this.idArr);
-    this.checkOrder(1);
+    this.checkOrder(this.orderInfo.id);
     return this;
   }
 
   class(value) {
     this.stringifyArr.push(`.${value}`);
     this.clArr.push(`.${value}`);
-    this.order[2] = +1;
-    this.checkOrder(2);
+    this.order.push(this.orderInfo.class);
+    this.checkOrder(this.orderInfo.class);
     return this;
   }
 
   attr(value) {
     this.stringifyArr.push(`[${value}]`);
     this.attrArr.push(`[${value}]`);
-    this.order[3] = +1;
-    this.checkOrder(3);
+    this.order.push(this.orderInfo.attribute);
+    this.checkOrder(this.orderInfo.attribute);
     return this;
   }
 
   pseudoClass(value) {
     this.stringifyArr.push(`:${value}`);
     this.psClArr.push(`:${value}`);
-    this.order[4] = +1;
-    this.checkOrder(4);
+    this.order.push(this.orderInfo.pseudoClass);
+    this.checkOrder(this.orderInfo.pseudoClass);
     return this;
   }
 
   pseudoElement(value) {
     this.stringifyArr.push(`::${value}`);
     this.psElArr.push(`::${value}`);
-    this.order[5] = +1;
+    this.order.push(this.orderInfo.pseudoElement);
     this.checkMoreThanOnce(this.psElArr);
-    this.checkOrder(5);
+    this.checkOrder(this.orderInfo.pseudoElement);
     return this;
   }
 
@@ -70,14 +78,8 @@ class CSSBuilder {
     return this;
   }
 
-  checkOrder(idx) {
-    if (idx) {
-      const num = this.order.slice(0, idx).reduce((acc, el) => acc + el);
-      if (num === 0 && this.stringifyArr.length > 1) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
-    } else if (idx === 0) {
-      const num = this.order.slice(1).reduce((acc, el) => acc + el);
-      if (num > 0 && this.stringifyArr.length > 1) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
-    }
+  checkOrder(selector) {
+    if (this.order !== 0 && selector > this.order[this.order.length - 2]) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
     return this;
   }
 
@@ -132,25 +134,27 @@ const builder = cssSelectorBuilder;
 // builder.element('div').id('id').class('yello').stringify() // ?
 // builder.element('div').id('id').class('yello').pseudoClass('pseudoclass').stringify(); // ?
 // builder.element('a').attr('href$=".png"').pseudoClass('focus').stringify() //?
-//
+
 // builder.combine(builder.element('p').id('id'), '>', builder.element('a').class('class')).stringify(); // ?
 // builder.combine(builder.element('p').pseudoClass('focus'), '>', builder.element('a').attr('href$=".png"')).stringify() //?
 // builder.combine(builder.element('p').id('introduction'), '~', builder.element('img').attr('href$=".png"')).stringify() //?
 
-// builder.element('table').element('div')
+// builder.element('table').element('div') //?
 // builder.id('id1').id('id2'); //?
 // builder.pseudoElement('after').pseudoElement('before')
 
-// builder.element('a').class('class1'); //?
+// builder.element('a').class('class1').stringify(); //?
 // builder.element('a').class('class1').class('class2').stringify(); //?
 
-// builder.element('div').element('a').moreThanOnce //?
-// builder.id('div').id('a').moreThanOnce; //?
-// builder.pseudoElement('div').pseudoElement('a').moreThanOnce //?
+// *** MORE THAN ONCE ***
+// builder.element('div').element('a'); //?
+// builder.id('div').id('a'); //?
+// builder.pseudoElement('div').pseudoElement('a'); //?
 
-// builder.class('draggable').class('animated');
-// builder.attr('href').attr('title')
-builder.pseudoClass('invalid').pseudoClass('focus');
+// *** NO ERROR;
+// builder.class('draggable').class('animated'); //?
+// builder.attr('href').attr('title') //?
+// builder.pseudoClass('invalid').pseudoClass('focus'); //?
 
 // *** CHECK ORDER ***
 
@@ -160,4 +164,5 @@ builder.pseudoClass('invalid').pseudoClass('focus');
 // builder.pseudoClass('hover').attr('title') //?
 // builder.pseudoElement('after').pseudoClass('valid') //?
 // builder.pseudoElement('after').id('id') //?
-// builder.id('id').pseudoElement('after').stringify(); //?
+
+builder.pseudoElement('after').id('hey'); //?
