@@ -226,3 +226,206 @@ getMatrixProduct(
     [7, 8, 9],
   ]
 ); //?
+
+/**
+ * Returns true if the specified string has the balanced brackets and false otherwise.
+ * Balanced means that is, whether it consists entirely of pairs of opening/closing brackets
+ * (in that order), none of which mis-nest.
+ * Brackets include [],(),{},<>
+ *
+ * @param {string} str
+ * @return {boolean}
+ *
+ * @example:
+ *   '' => true
+ *   '[]'  => true
+ *   '{}'  => true
+ *   '()   => true
+ *   '[[]' => false
+ *   ']['  => false
+ *   '[[][][[]]]' => true
+ *   '[[][]][' => false
+ *   '{)' = false
+ *   '{[(<{[]}>)]}' = true
+ */
+function isBracketsBalanced(str) {
+  if (!str.length) return true;
+  const openBrackets = ['[', '(', '<', '{'];
+  const brackets = {
+    ['}']: '{',
+    [']']: '[',
+    [')']: '(',
+    ['>']: '<',
+  };
+  const checkingArrStack = [];
+
+  for (let i = 0; i < str.length; i += 1) {
+    const currChar = str[i];
+    if (openBrackets.includes(currChar)) {
+      checkingArrStack.push(currChar);
+    } else {
+      if (!checkingArrStack.length) {
+        return false;
+      }
+      const topEl = checkingArrStack[checkingArrStack.length - 1];
+
+      if (brackets[currChar] === topEl) {
+        checkingArrStack.pop();
+      } else {
+        return false;
+      }
+    }
+  }
+  return checkingArrStack.length === 0;
+}
+
+isBracketsBalanced('[{{{{}}}}]'); //?
+
+/**
+ * Returns the common directory path for specified array of full filenames.
+ *
+ * @param {array} pathes
+ * @return {string}
+ *
+ * @example:
+ *   ['/web/images/image1.png', '/web/images/image2.png']  => '/web/images/'
+ *   ['/web/assets/style.css', '/web/scripts/app.js',  'home/setting.conf'] => ''
+ *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
+ *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
+ */
+function getCommonDirectoryPath(paths) {
+  const pathOne = paths[0].split('/'); //?
+
+  const splitArr = paths.map((el) => el.split('/')).slice(1); //?
+
+  const common = [];
+
+  splitArr.forEach((el) => {
+    el.forEach((ell, idx) => {
+      if (ell === pathOne[idx]) common.push(ell);
+    });
+  });
+
+  return common.join('/');
+}
+
+// getCommonDirectoryPath(['/web/images/image1.png', '/web/images/image2.png']); //?
+// getCommonDirectoryPath(['/web/assets/style.css', '/web/scripts/app.js', 'home/setting.conf']); //?
+
+function getCommonDirectoryPath(array) {
+  const sortedArr = array.concat().sort(); //?
+  const firstEl = sortedArr[0];
+  const lastEl = sortedArr[sortedArr.length - 1];
+  const firstElLen = firstEl.length;
+  let i = 0;
+  while (i < firstElLen && firstEl.charAt(i) === lastEl.charAt(i)) i += 1;
+  const str = firstEl.substring(0, i);
+  if (str[str.length - 1] === '/' || str[str.length - 1] === undefined) return str;
+  return `${str.split('/').slice(0, -1).join('/')}/`;
+}
+
+getCommonDirectoryPath(['/web/images/image1.png', '/web/ images/image2.png', '/web/images/image3.png']); //?
+// getCommonDirectoryPath(['/web/images/image1.png', '/web/images/limage2.png']); //?
+// getCommonDirectoryPath(['/web/assets/style.css', '/web/scripts/app.js', 'home/setting.conf']); //?
+// getCommonDirectoryPath(['/web/assets/style.css', '/.bin/mocha', '/read.me']); //?
+
+/**
+ * Returns the evaluation of the specified tic-tac-toe position.
+ * See the details: https://en.wikipedia.org/wiki/Tic-tac-toe
+ *
+ * Position is provides as 3x3 array with the following values: 'X','0', undefined
+ * Function should return who is winner in the current position according to the game rules.
+ * The result can be: 'X','0',undefined
+ *
+ * @param {array} position
+ * @return {string}
+ *
+ * @example
+ *
+ *   [[ 'X',   ,'0' ],
+ *    [    ,'X','0' ],       =>  'X'
+ *    [    ,   ,'X' ]]
+ *
+ *   [[ '0','0','0' ],
+ *    [    ,'X',    ],       =>  '0'
+ *    [ 'X',   ,'X' ]]
+ *
+ *   [[ '0','X','0' ],
+ *    [    ,'X',    ],       =>  undefined
+ *    [ 'X','0','X' ]]
+ *
+ *   [[    ,   ,    ],
+ *    [    ,   ,    ],       =>  undefined
+ *    [    ,   ,    ]]
+ *
+ */
+// function evaluateTicTacToePosition(position) {
+//   // horiz
+//   if (position[0][0] === position[0][1] && position[0][0] === position[0][2]) {
+//     return position[0][0];
+//   } else if (position[1][0] === position[1][1] && position[1][0] === position[1][2]) {
+//     return position[1][3];
+//   } else if (position[2][0] === position[2][1] && position[2][0] === position[2][2]) {
+//     return position[2][2];
+//     // vert
+//   } else if (position[0][0] === position[1][0] && position[0][0] === position[2][0]) {
+//     return position[0][0];
+//   } else if (position[0][1] === position[1][1] && position[0][1] === position[2][1]) {
+//     return position[0][1];
+//   } else if (position[0][2] === position[1][2] && position[0][2] === position[2][2]) {
+//     return position[0][2];
+//   } else if (position[0][0] === position[1][1] && position[0][0] === position[2][2]) {
+//     return position[0][0];
+//   } else if (position[0][2] === position[1][1] && position[0][2] === position[2][0]) {
+//     return position[0][2];
+//   }
+//   return undefined;
+// }
+
+function evaluateTicTacToePosition(position) {
+  // horiz
+
+  const winner = [];
+
+  if (position[0][0] !== undefined && position[0][0] === position[0][1] && position[0][0] === position[0][2]) {
+    return position[0][0];
+  }
+  if (position[1][0] !== undefined && position[1][0] === position[1][1] && position[1][0] === position[1][2]) {
+    return position[1][2];
+  }
+  if (position[2][0] !== undefined && position[2][0] === position[2][1] && position[2][0] === position[2][2]) {
+    return position[2][0];
+    // vert
+  }
+  if (position[0][0] !== undefined && position[0][0] === position[1][0] && position[0][0] === position[2][0]) {
+    return position[0][0];
+  }
+  if (position[0][1] !== undefined && position[0][1] === position[1][1] && position[0][1] === position[2][1]) {
+    return position[0][1];
+  }
+  if (position[0][2] !== undefined && position[0][2] === position[1][2] && position[0][2] === position[2][2]) {
+    return position[0][2];
+  }
+  if (position[0][0] !== undefined && position[0][0] === position[1][1] && position[0][0] === position[2][2]) {
+    return position[0][0];
+  }
+  if (position[0][2] !== undefined && position[0][2] === position[1][1] && position[0][2] === position[2][0]) {
+    return position[0][2];
+  }
+  return undefined;
+}
+
+// ???
+// -------------
+// |   |   |   |
+// -------------
+// | X |   | X |
+// -------------
+// | 0 | 0 | 0 |
+// -------------
+
+evaluateTicTacToePosition([
+  [, , ,],
+  ['X', , 'X'],
+  ['0', '0', '0'],
+]); //?

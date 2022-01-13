@@ -346,7 +346,36 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(str) {}
+function isBracketsBalanced(str) {
+  if (!str.length) return true;
+  const openBrackets = ['[', '(', '<', '{'];
+  const brackets = {
+    '}': '{',
+    ']': '[',
+    ')': '(',
+    '>': '<',
+  };
+  const checkingArrStack = [];
+
+  for (let i = 0; i < str.length; i += 1) {
+    const currChar = str[i];
+    if (openBrackets.includes(currChar)) {
+      checkingArrStack.push(currChar);
+    } else {
+      if (!checkingArrStack.length) {
+        return false;
+      }
+      const topEl = checkingArrStack[checkingArrStack.length - 1];
+
+      if (brackets[currChar] === topEl) {
+        checkingArrStack.pop();
+      } else {
+        return false;
+      }
+    }
+  }
+  return checkingArrStack.length === 0;
+}
 
 /**
  * Returns the string with n-ary (binary, ternary, etc, where n <= 10)
@@ -384,8 +413,16 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(array) {
+  const sortedArr = array.concat().sort();
+  const firstEl = sortedArr[0];
+  const lastEl = sortedArr[sortedArr.length - 1];
+  const firstElLen = firstEl.length;
+  let i = 0;
+  while (i < firstElLen && firstEl.charAt(i) === lastEl.charAt(i)) i += 1;
+  const str = firstEl.substring(0, i);
+  if (str[str.length - 1] === '/' || str[str.length - 1] === undefined) return str;
+  return `${str.split('/').slice(0, -1).join('/')}/`;
 }
 
 /**
@@ -412,7 +449,7 @@ function getMatrixProduct(m1, m2) {
 
   return result.map((row, i) => {
     return row.map((val, j) => {
-      return m1[i].reduce((sum, elm, k) => sum + elm * m2[k][j], 0);
+      return m1[i].reduce((sum, elem, k) => sum + elem * m2[k][j], 0);
     });
   });
 }
@@ -447,8 +484,38 @@ function getMatrixProduct(m1, m2) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+
+/* eslint-disable */
+
+function evaluateTicTacToePosition(position) {
+  // horiz
+
+  if (position[0][0] !== undefined && position[0][0] === position[0][1] && position[0][0] === position[0][2]) {
+    return position[0][0];
+  }
+  if (position[1][0] !== undefined && position[1][0] === position[1][1] && position[1][0] === position[1][2]) {
+    return position[1][2];
+  }
+  if (position[2][0] !== undefined && position[2][0] === position[2][1] && position[2][0] === position[2][2]) {
+    return position[2][0];
+    // vert
+  }
+  if (position[0][0] !== undefined && position[0][0] === position[1][0] && position[0][0] === position[2][0]) {
+    return position[0][0];
+  }
+  if (position[0][1] !== undefined && position[0][1] === position[1][1] && position[0][1] === position[2][1]) {
+    return position[0][1];
+  }
+  if (position[0][2] !== undefined && position[0][2] === position[1][2] && position[0][2] === position[2][2]) {
+    return position[0][2];
+  }
+  if (position[0][0] !== undefined && position[0][0] === position[1][1] && position[0][0] === position[2][2]) {
+    return position[0][0];
+  }
+  if (position[0][2] !== undefined && position[0][2] === position[1][1] && position[0][2] === position[2][0]) {
+    return position[0][2];
+  }
+  return undefined;
 }
 
 module.exports = {
