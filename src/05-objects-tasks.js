@@ -136,7 +136,7 @@ class CSSBuilder {
     this.checkMoreThanOnce(this.elArr);
     this.order.push(this.orderInfo.element);
     this.checkOrder(this.orderInfo.element);
-    return this; // ?
+    return this;
   }
 
   id(value) {
@@ -231,9 +231,11 @@ const cssSelectorBuilder = {
   combine(selector1, combinator, selector2) {
     return new CSSBuilder().combine(selector1, combinator, selector2);
   },
+
   stringify() {
     return new CSSBuilder().stringify();
   },
+
 };
 
 module.exports = {
