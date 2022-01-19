@@ -62,7 +62,7 @@ function getPowerFunction(exponent) {
 function getPolynom(...args) {
   const coeffArr = Array.from(args); // ?
 
-  return function (x) {
+  return (x) => {
     let result = coeffArr[0];
     for (let i = 1; i < coeffArr.length; i += 1) {
       result = result * x + coeffArr[i];

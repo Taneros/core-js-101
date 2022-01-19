@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
@@ -99,7 +98,7 @@ function getFastestPromise(array) {
  */
 
 function chainPromises(array, action) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const results = [];
 
     array.forEach((value, index) => {

@@ -134,10 +134,11 @@ function doRectanglesOverlap(rect1, rect2) {
   rectTwo.bottom = rectTwo.top + rectTwo.height;
   rectTwo.right = rectTwo.left + rectTwo.width;
 
-  if (rectOne.left >= rectTwo.right || rectOne.top >= rectTwo.bottom || rectOne.right <= rectTwo.left || rectOne.bottom <= rectTwo.top) return false; // eslint-disable-line
+  if (rectOne.left >= rectTwo.right || rectOne.top >= rectTwo.bottom
+    || rectOne.right <= rectTwo.left
+    || rectOne.bottom <= rectTwo.top) return false;
   return true;
 }
-
 /**
  * Returns true, if point lies inside the circle, otherwise false.
  * Circle is an object of
@@ -485,34 +486,36 @@ function getMatrixProduct(m1, m2) {
  *
  */
 
-/* eslint-disable */
-
 function evaluateTicTacToePosition(position) {
+  const checker = (idx1, idx2, idx3, idx4) => {
+    return position[idx1][idx2] === position[idx3][idx4];
+  };
+
   // horiz
 
-  if (position[0][0] !== undefined && position[0][0] === position[0][1] && position[0][0] === position[0][2]) {
+  if (position[0][0] !== undefined && checker(0, 0, 0, 1) && checker(0, 0, 0, 2)) {
     return position[0][0];
   }
-  if (position[1][0] !== undefined && position[1][0] === position[1][1] && position[1][0] === position[1][2]) {
+  if (position[1][0] !== undefined && checker(1, 0, 1, 1) && checker(1, 0, 1, 2)) {
     return position[1][2];
   }
-  if (position[2][0] !== undefined && position[2][0] === position[2][1] && position[2][0] === position[2][2]) {
+  if (position[2][0] !== undefined && checker(2, 0, 2, 1) && checker(2, 0, 2, 2)) {
     return position[2][0];
     // vert
   }
-  if (position[0][0] !== undefined && position[0][0] === position[1][0] && position[0][0] === position[2][0]) {
+  if (position[0][0] !== undefined && checker(0, 0, 1, 0) && checker(0, 0, 2, 0)) {
     return position[0][0];
   }
-  if (position[0][1] !== undefined && position[0][1] === position[1][1] && position[0][1] === position[2][1]) {
+  if (position[0][1] !== undefined && checker(0, 1, 1, 1) && checker(0, 1, 2, 1)) {
     return position[0][1];
   }
-  if (position[0][2] !== undefined && position[0][2] === position[1][2] && position[0][2] === position[2][2]) {
+  if (position[0][2] !== undefined && checker(0, 2, 1, 2) && checker(0, 2, 2, 2)) {
     return position[0][2];
   }
-  if (position[0][0] !== undefined && position[0][0] === position[1][1] && position[0][0] === position[2][2]) {
+  if (position[0][0] !== undefined && checker(0, 0, 1, 1) && checker(0, 0, 2, 2)) {
     return position[0][0];
   }
-  if (position[0][2] !== undefined && position[0][2] === position[1][1] && position[0][2] === position[2][0]) {
+  if (position[0][2] !== undefined && checker(0, 2, 1, 1) && checker(0, 2, 2, 0)) {
     return position[0][2];
   }
   return undefined;
