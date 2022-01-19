@@ -448,11 +448,8 @@ function getCommonDirectoryPath(array) {
 function getMatrixProduct(m1, m2) {
   const result = new Array(m1.length).fill(0).map(() => new Array(m2[0].length).fill(0));
 
-  return result.map((row, i) => {
-    return row.map((val, j) => {
-      return m1[i].reduce((sum, elem, k) => sum + elem * m2[k][j], 0);
-    });
-  });
+  return result.map((row, i) => row.map((val, j) => m1[i]
+    .reduce((sum, elem, k) => sum + elem * m2[k][j], 0)));
 }
 
 /**
@@ -487,9 +484,7 @@ function getMatrixProduct(m1, m2) {
  */
 
 function evaluateTicTacToePosition(position) {
-  const checker = (idx1, idx2, idx3, idx4) => {
-    return position[idx1][idx2] === position[idx3][idx4];
-  };
+  const checker = (idx1, idx2, idx3, idx4) => position[idx1][idx2] === position[idx3][idx4];
 
   // horiz
 
